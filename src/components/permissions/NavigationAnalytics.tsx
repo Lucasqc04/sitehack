@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-interface UserInteractionData {
-  type: string;
-  count: number;
-}
-
+ 
 const NavigationAnalytics: React.FC = () => {
   const [tracking, setTracking] = useState(false);
   const [interactions, setInteractions] = useState<Record<string, number>>({

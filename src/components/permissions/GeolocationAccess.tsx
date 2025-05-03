@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {  useState } from 'react';
 import { MapView } from '../';
 
 const GeolocationAccess: React.FC = () => {
