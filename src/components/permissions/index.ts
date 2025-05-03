@@ -1,0 +1,12 @@
+export { default as CameraAccess } from './CameraAccess';
+export { default as MicrophoneAccess } from './MicrophoneAccess';
+export { default as ClipboardAccess } from './ClipboardAccess';
+export { default as GeolocationAccess } from './GeolocationAccess';
+export { default as FileAccess } from './FileAccess';
+export { default as BluetoothAccess } from './BluetoothAccess';
+export { default as SensorsAccess } from './SensorsAccess';
+export { default as NotificationAccess } from './NotificationAccess';
+export { default as ScreenRecordingAccess } from './ScreenRecordingAccess';
+export { default as PerformanceAccess } from './PerformanceAccess';
+export { default as NavigationAnalytics } from './NavigationAnalytics';
+export { default as PermissionsManager } from './PermissionsManager';

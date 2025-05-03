@@ -1,0 +1,199 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-black text-green-400;
+    font-family: 'Courier New', Courier, monospace;
+    overflow-x: hidden;
+  }
+  
+  html {
+    scrollbar-color: #00ff00 #111;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #111;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #00ff00;
+    border-radius: 0;
+  }
+}
+
+@layer utilities {
+  .text-shadow-hack {
+    text-shadow: 0 0 5px theme('colors.hack.primary');
+  }
+}
+
+@layer components {
+  .typing-effect h1 {
+    border-right: 2px solid theme('colors.hack.primary');
+    animation: cursor-blink 1s step-end infinite;
+  }
+  
+  .hack-border {
+    @apply border border-green-500;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+  }
+  
+  .hack-panel {
+    @apply border border-green-500 bg-black bg-opacity-80 p-4;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+  }
+  
+  .hack-btn {
+    @apply py-2 px-4 bg-black border border-green-500 text-green-400 hover:bg-green-500 hover:text-black transition-all duration-300;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+  }
+  
+  .hack-btn:hover {
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+  }
+  
+  .hack-text {
+    @apply text-green-400;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+  }
+  
+  .hack-title {
+    @apply text-xl md:text-2xl font-bold text-green-400 mb-4;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+  }
+  
+  .hack-data-row:nth-child(odd) {
+    @apply bg-green-900 bg-opacity-10;
+  }
+}
+
+@keyframes cursor-blink {
+  50% { border-color: transparent; }
+}
+
+/* Animações de digitação/hacking */
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: #00ff00 }
+}
+
+@keyframes glitch {
+  0% {
+    text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75),
+                -0.05em -0.025em 0 rgba(0, 255, 0, 0.75),
+                0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  15% {
+    text-shadow: -0.05em -0.025em 0 rgba(255, 0, 0, 0.75),
+                0.025em 0.025em 0 rgba(0, 255, 0, 0.75),
+                -0.05em -0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  50% {
+    text-shadow: 0.025em 0.05em 0 rgba(255, 0, 0, 0.75),
+                0.05em 0 0 rgba(0, 255, 0, 0.75),
+                0 -0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  100% {
+    text-shadow: -0.025em 0 0 rgba(255, 0, 0, 0.75),
+                -0.025em -0.025em 0 rgba(0, 255, 0, 0.75),
+                -0.025em -0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes matrix-rain {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 0% 100%;
+  }
+}
+
+.typing-animation {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  margin: 0;
+  animation: 
+    typing 3.5s steps(40, end),
+    blink-caret .75s step-end infinite;
+}
+
+.glitch-text {
+  position: relative;
+  animation: glitch 500ms infinite;
+}
+
+.matrix-background {
+  position: relative;
+  overflow: hidden;
+}
+
+.matrix-background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(0, 255, 0, 0.03), rgba(0, 255, 0, 0.03));
+  background-size: 100% 2px;
+  animation: matrix-rain 5s linear infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.scanline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: rgba(0, 255, 0, 0.15);
+  z-index: 999;
+  animation: scanline 3s linear infinite;
+  pointer-events: none;
+}
+
+.hacking-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.hacking-effect::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+}
