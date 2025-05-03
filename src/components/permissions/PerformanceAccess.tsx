@@ -79,43 +79,65 @@ const PerformanceAccess: React.FC = () => {
   }
 
   return (
-    <div className="border border-hack-primary p-4 mb-6">
-      <h3 className="text-xl text-hack-primary mb-3">Dados de Performance</h3>
+    <div className="hack-panel mb-6">
+      <h3 className="hack-title">Dados de Performance</h3>
       
       <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-3 border border-hack-primary">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="hack-panel">
             <div className="text-sm text-hack-secondary">Tempo de Carregamento</div>
             <div className="text-2xl text-hack-primary">{performanceData.pageLoad}ms</div>
           </div>
           
-          <div className="p-3 border border-hack-primary">
+          <div className="hack-panel">
             <div className="text-sm text-hack-secondary">Carregamento do DOM</div>
             <div className="text-2xl text-hack-primary">{performanceData.domLoad}ms</div>
           </div>
           
-          <div className="p-3 border border-hack-primary">
+          <div className="hack-panel sm:col-span-2 md:col-span-1">
             <div className="text-sm text-hack-secondary">Memória Utilizada</div>
             <div className="text-2xl text-hack-primary">
-              {performanceData.memory ? `${performanceData.memory} MB` : 'Não disponível'}
+              {performanceData.memory ? `${performanceData.memory} MB` : 'Indisponível'}
             </div>
           </div>
         </div>
         
         {performanceData.resourceLoad.length > 0 && (
           <div>
-            <h4 className="text-lg text-hack-primary mb-2">Tempo de Carregamento de Recursos</h4>
-            <div className="h-60 border border-hack-primary p-2 bg-hack-dark">
+            <h4 className="hack-title text-base">Tempo de Carregamento de Recursos</h4>
+            <div className="h-60 md:h-80 border border-hack-primary p-2 bg-hack-dark">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={performanceData.resourceLoad}>
+                <BarChart 
+                  data={performanceData.resourceLoad}
+                  margin={{ top: 5, right: 10, left: 0, bottom: 5 }}
+                  layout="vertical"
+                >
                   <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-                  <XAxis dataKey="name" stroke="#00ff00" />
-                  <YAxis label={{ value: 'Tempo (ms)', angle: -90, position: 'insideLeft', fill: '#00ff00' }} stroke="#00ff00" />
-                  <Tooltip contentStyle={{ backgroundColor: '#111', border: '1px solid #00ff00' }} 
-                           labelStyle={{ color: '#00ff00' }} />
+                  <XAxis type="number" stroke="#00ff00" />
+                  <YAxis 
+                    dataKey="name" 
+                    type="category" 
+                    stroke="#00ff00" 
+                    width={100}
+                    tick={{ fontSize: 12 }}
+                  />
+                  <Tooltip contentStyle={{ backgroundColor: '#111', border: '1px solid #00ff00' }} />
                   <Bar dataKey="loadTime" fill="#00ff00" />
                 </BarChart>
               </ResponsiveContainer>
+            </div>
+            
+            {/* Lista para mobile */}
+            <div className="mt-4 md:hidden">
+              <h5 className="text-hack-primary mb-2">Recursos carregados:</h5>
+              <div className="space-y-2">
+                {performanceData.resourceLoad.map((resource, i) => (
+                  <div key={i} className="hack-panel p-2 flex justify-between">
+                    <span className="text-hack-secondary truncate flex-1">{resource.name}</span>
+                    <span className="text-hack-primary ml-2">{resource.loadTime}ms</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}

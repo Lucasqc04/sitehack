@@ -109,18 +109,19 @@ const PermissionsManager: React.FC = () => {
   }
 
   return (
-    <div className="border border-hack-primary p-4 mb-6">
-      <h3 className="text-xl text-hack-primary mb-3">Gerenciador de Permissões</h3>
+    <div className="hack-panel mb-6">
+      <h3 className="hack-title">Gerenciador de Permissões</h3>
       
       <div className="space-y-4">
         <button 
           onClick={checkPermissions}
-          className="py-2 px-4 bg-hack-dark border border-hack-primary text-hack-primary hover:bg-hack-primary hover:text-hack-dark"
+          className="hack-btn"
         >
           Atualizar Status das Permissões
         </button>
         
-        <div className="border border-hack-primary">
+        {/* Tabela para desktop / Cards para mobile */}
+        <div className="hidden md:block border border-hack-primary">
           <table className="w-full">
             <thead className="bg-hack-dark">
               <tr>
@@ -158,6 +159,36 @@ const PermissionsManager: React.FC = () => {
               ))}
             </tbody>
           </table>
+        </div>
+        
+        {/* Cards para mobile */}
+        <div className="md:hidden space-y-4">
+          {permissions.map((permission) => (
+            <div key={permission.name} className="hack-panel p-3 space-y-2">
+              <div className="flex items-center">
+                <span className="text-2xl mr-3">{permission.icon}</span>
+                <div className="flex-1">
+                  <div className="text-hack-primary font-bold">{permission.name}</div>
+                  <div className="text-hack-secondary text-sm">{permission.description}</div>
+                </div>
+              </div>
+              
+              <div className="flex justify-between items-center mt-2">
+                <div>
+                  {getStatusBadge(permission.status)}
+                </div>
+                
+                {permission.status === 'granted' && (
+                  <button 
+                    onClick={() => handleRevokeAttempt(permission.name)}
+                    className="py-1 px-2 bg-hack-dark border border-red-500 text-red-500 text-sm hover:bg-red-500 hover:text-hack-dark"
+                  >
+                    Revogar
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
         
         <div className="text-hack-secondary text-sm">

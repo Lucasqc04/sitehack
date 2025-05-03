@@ -70,8 +70,8 @@ const GeolocationAccess: React.FC = () => {
   };
 
   return (
-    <div className="border border-hack-primary p-4 mb-6">
-      <h3 className="text-xl text-hack-primary mb-3">Geolocalização Precisa</h3>
+    <div className="hack-panel mb-6">
+      <h3 className="hack-title">Geolocalização Precisa</h3>
       
       {!location ? (
         <div className="flex flex-col items-center">

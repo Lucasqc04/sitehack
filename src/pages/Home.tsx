@@ -137,15 +137,16 @@ const Home: React.FC = () => {
 
   // Renderiza o conteúdo de dados com permissão
   const renderWithPermissionContent = () => (
-    <div className="min-h-screen bg-hack-dark p-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-black p-8 matrix-background">
+      <div className="scanline"></div>
+      <div className="max-w-4xl mx-auto space-y-8">
         <div className="flex justify-between items-center mb-10">
-          <h1 className="text-4xl font-mono text-hack-primary">
+          <h1 className="text-4xl font-mono hack-text">
             {'> DADOS COM SUA PERMISSÃO'}
           </h1>
           <button 
             onClick={() => changeViewMode('selection')}
-            className="border border-hack-primary px-4 py-2 text-hack-primary hover:bg-hack-primary hover:text-hack-dark"
+            className="hack-btn"
           >
             {'< Voltar'}
           </button>

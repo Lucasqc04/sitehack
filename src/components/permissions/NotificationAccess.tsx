@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const NotificationAccess: React.FC = () => {
   const [permission, setPermission] = useState<NotificationPermission | 'unknown'>(
@@ -7,6 +7,17 @@ const NotificationAccess: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isRequesting, setIsRequesting] = useState(false);
   const [notificationSent, setNotificationSent] = useState(false);
+  const [isAndroid, setIsAndroid] = useState(false);
+  const [serviceWorkerSupported, setServiceWorkerSupported] = useState(false);
+
+  // Verificar se é dispositivo Android
+  useEffect(() => {
+    const isAndroidDevice = /Android/i.test(navigator.userAgent);
+    setIsAndroid(isAndroidDevice);
+    
+    // Verificar se o navegador suporta Service Worker (necessário para notificações em Android)
+    setServiceWorkerSupported('serviceWorker' in navigator);
+  }, []);
 
   const requestPermission = async () => {
     if (!('Notification' in window)) {
@@ -23,6 +34,16 @@ const NotificationAccess: React.FC = () => {
 
       if (result === 'granted') {
         setNotificationSent(false);
+        
+        // Registrar Service Worker para Android (necessário para notificações)
+        if (isAndroid && serviceWorkerSupported && !navigator.serviceWorker.controller) {
+          try {
+            await navigator.serviceWorker.register('/notification-sw.js');
+            console.log('Service Worker registrado para notificações');
+          } catch (err) {
+            console.error('Erro ao registrar Service Worker:', err);
+          }
+        }
       }
     } catch (err: any) {
       setError(`Erro ao solicitar permissão: ${err.message}`);
@@ -38,16 +59,32 @@ const NotificationAccess: React.FC = () => {
     }
 
     try {
-      const notification = new Notification('Hack de Rastreamento', {
+      // Opções específicas para Android usando asserção de tipo para contornar limitações de tipagem
+      const options = {
         body: 'Este é um exemplo de notificação que um site pode enviar com sua permissão.',
         icon: 'https://cdn-icons-png.flaticon.com/512/2092/2092757.png',
-        tag: 'hack-tracking-demo'
-      });
-
-      notification.onclick = () => {
-        console.log('Notificação clicada');
-        window.focus();
-      };
+        tag: 'hack-tracking-demo',
+        vibrate: [100, 50, 100], // Padrão de vibração: vibra, pausa, vibra
+        timestamp: Date.now(),
+        requireInteraction: true // Mantém a notificação até o usuário interagir
+      } as NotificationOptions; // Usar asserção de tipo para evitar erro de tipagem
+      
+      // Usar Service Worker para Android se disponível
+      if (isAndroid && serviceWorkerSupported && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          type: 'NOTIFICATION',
+          title: 'Hack de Rastreamento',
+          options
+        });
+      } else {
+        // Notificação padrão
+        const notification = new Notification('Hack de Rastreamento', options);
+        
+        notification.onclick = () => {
+          console.log('Notificação clicada');
+          window.focus();
+        };
+      }
 
       setNotificationSent(true);
     } catch (err: any) {
@@ -56,16 +93,34 @@ const NotificationAccess: React.FC = () => {
   };
 
   return (
-    <div className="border border-hack-primary p-4 mb-6">
-      <h3 className="text-xl text-hack-primary mb-3">Notificações Push</h3>
+    <div className="hack-panel mb-6">
+      <h3 className="hack-title">Notificações Push</h3>
       
       <div className="space-y-4">
+        {isAndroid && (
+          <div className="hack-panel bg-opacity-30">
+            <p className="text-hack-primary">
+              <span className="text-xl mr-2">📱</span> 
+              Detectado dispositivo Android
+            </p>
+            {serviceWorkerSupported ? (
+              <p className="text-hack-secondary text-sm mt-1">
+                Seu navegador suporta notificações via Service Worker
+              </p>
+            ) : (
+              <p className="text-yellow-500 text-sm mt-1">
+                Para melhor suporte a notificações, use um navegador que suporte Service Workers
+              </p>
+            )}
+          </div>
+        )}
+        
         {permission !== 'granted' && (
           <button 
             onClick={requestPermission}
             disabled={isRequesting || permission === 'denied'}
-            className={`py-2 px-4 bg-hack-dark border border-hack-primary text-hack-primary 
-              ${(isRequesting || permission === 'denied') ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hack-primary hover:text-hack-dark'}`}
+            className={`hack-btn w-full sm:w-auto
+              ${(isRequesting || permission === 'denied') ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             {isRequesting ? 'Solicitando permissão...' : 'Solicitar Permissão para Notificações'}
           </button>
@@ -79,7 +134,7 @@ const NotificationAccess: React.FC = () => {
             
             <button 
               onClick={sendNotification}
-              className="py-2 px-4 bg-hack-dark border border-hack-primary text-hack-primary hover:bg-hack-primary hover:text-hack-dark"
+              className="hack-btn w-full sm:w-auto"
             >
               Enviar Notificação de Teste
             </button>

@@ -48,8 +48,8 @@ const FileAccess: React.FC = () => {
   };
 
   return (
-    <div className="border border-hack-primary p-4 mb-6">
-      <h3 className="text-xl text-hack-primary mb-3">Acesso a Arquivos</h3>
+    <div className="hack-panel mb-6">
+      <h3 className="hack-title">Acesso a Arquivos</h3>
       
       <div className="space-y-4">
         <input 

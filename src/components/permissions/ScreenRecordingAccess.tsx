@@ -162,8 +162,8 @@ const ScreenRecordingAccess: React.FC = () => {
   }, [recording, recordedChunks, videoURL]);
 
   return (
-    <div className="border border-hack-primary p-4 mb-6">
-      <h3 className="text-xl text-hack-primary mb-3">Gravação de Tela</h3>
+    <div className="hack-panel mb-6">
+      <h3 className="hack-title">Gravação de Tela</h3>
       
       <div className="space-y-4">
         {!stream ? (

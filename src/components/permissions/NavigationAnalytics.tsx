@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
- 
 const NavigationAnalytics: React.FC = () => {
   const [tracking, setTracking] = useState(false);
   const [interactions, setInteractions] = useState<Record<string, number>>({
@@ -74,15 +73,15 @@ const NavigationAnalytics: React.FC = () => {
   });
 
   return (
-    <div className="border border-hack-primary p-4 mb-6">
-      <h3 className="text-xl text-hack-primary mb-3">Análise de Navegação em Tempo Real</h3>
+    <div className="hack-panel mb-6">
+      <h3 className="hack-title">Análise de Navegação em Tempo Real</h3>
       
       <div className="space-y-4">
         <div className="flex space-x-4">
           {!tracking ? (
             <button 
               onClick={startTracking}
-              className="py-2 px-4 bg-hack-dark border border-hack-primary text-hack-primary hover:bg-hack-primary hover:text-hack-dark"
+              className="hack-btn"
             >
               Iniciar Rastreamento
             </button>
@@ -104,18 +103,44 @@ const NavigationAnalytics: React.FC = () => {
         
         {(chartData.some(item => item.count > 0)) && (
           <div>
-            <h4 className="text-lg text-hack-primary mb-2">Suas Interações Nesta Sessão</h4>
-            <div className="h-60 border border-hack-primary p-2 bg-hack-dark">
+            <h4 className="hack-title text-base">Suas Interações Nesta Sessão</h4>
+            
+            {/* Gráfico de barras */}
+            <div className="h-60 md:h-80 border border-hack-primary p-2 bg-hack-dark overflow-hidden">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData}>
+                <BarChart 
+                  data={chartData}
+                  margin={{ top: 5, right: 10, left: 0, bottom: 5 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-                  <XAxis dataKey="type" stroke="#00ff00" />
+                  <XAxis 
+                    dataKey="type" 
+                    stroke="#00ff00"
+                    angle={-45}
+                    textAnchor="end"
+                    height={70}
+                    fontSize={12}
+                    tickMargin={10}
+                  />
                   <YAxis stroke="#00ff00" />
-                  <Tooltip contentStyle={{ backgroundColor: '#111', border: '1px solid #00ff00' }} />
-                  <Legend />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#111', border: '1px solid #00ff00' }} 
+                    cursor={{ fill: 'rgba(0, 255, 0, 0.1)' }}
+                  />
+                  <Legend wrapperStyle={{ paddingTop: 10 }} />
                   <Bar dataKey="count" fill="#00ff00" />
                 </BarChart>
               </ResponsiveContainer>
+            </div>
+            
+            {/* Resumo para mobile */}
+            <div className="mt-4 grid grid-cols-2 gap-2 md:hidden">
+              {chartData.map(item => (
+                <div key={item.type} className="hack-panel p-2 flex justify-between">
+                  <span className="text-hack-secondary">{item.type}:</span>
+                  <span className="text-hack-primary font-bold">{item.count}</span>
+                </div>
+              ))}
             </div>
           </div>
         )}
