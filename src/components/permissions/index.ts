@@ -10,3 +10,5 @@ export { default as ScreenRecordingAccess } from './ScreenRecordingAccess';
 export { default as PerformanceAccess } from './PerformanceAccess';
 export { default as NavigationAnalytics } from './NavigationAnalytics';
 export { default as PermissionsManager } from './PermissionsManager';
+export { default as UsbAccess } from './UsbAccess';
+export { default as SerialAccess } from './SerialAccess';
