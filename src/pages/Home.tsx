@@ -5,7 +5,9 @@ import {
   NetworkLocation,
   HardwareDisplay,
   SessionSignals,
-  StorageFootprint
+  StorageFootprint,
+  PermissionStatusOverview,
+  MediaDevicesSummary
 } from '../components';
 import {
   CameraAccess,
@@ -124,6 +126,8 @@ const Home: React.FC = () => {
         <HardwareDisplay />
         <SessionSignals />
         <StorageFootprint />
+        <PermissionStatusOverview />
+        <MediaDevicesSummary />
         <AdvancedFingerprint />
         
         <div className="hack-panel mt-12">
