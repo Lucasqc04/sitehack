@@ -9,6 +9,7 @@ const NotificationAccess: React.FC = () => {
   const [notificationSent, setNotificationSent] = useState(false);
   const [isAndroid, setIsAndroid] = useState(false);
   const [serviceWorkerSupported, setServiceWorkerSupported] = useState(false);
+  const [isSecureContext, setIsSecureContext] = useState(true);
 
   // Verificar se é dispositivo Android
   useEffect(() => {
@@ -17,11 +18,17 @@ const NotificationAccess: React.FC = () => {
     
     // Verificar se o navegador suporta Service Worker (necessário para notificações em Android)
     setServiceWorkerSupported('serviceWorker' in navigator);
+    setIsSecureContext(window.isSecureContext);
   }, []);
 
   const requestPermission = async () => {
     if (!('Notification' in window)) {
       setError('Este navegador não suporta notificações');
+      return;
+    }
+
+    if (!isSecureContext) {
+      setError('Notificações exigem uma conexão segura (HTTPS ou localhost).');
       return;
     }
 
@@ -36,9 +43,10 @@ const NotificationAccess: React.FC = () => {
         setNotificationSent(false);
         
         // Registrar Service Worker para Android (necessário para notificações)
-        if (isAndroid && serviceWorkerSupported && !navigator.serviceWorker.controller) {
+        if (isAndroid && serviceWorkerSupported) {
           try {
             await navigator.serviceWorker.register('/notification-sw.js');
+            await navigator.serviceWorker.ready;
             console.log('Service Worker registrado para notificações');
           } catch (err) {
             console.error('Erro ao registrar Service Worker:', err);
@@ -52,9 +60,14 @@ const NotificationAccess: React.FC = () => {
     }
   };
 
-  const sendNotification = () => {
+  const sendNotification = async () => {
     if (permission !== 'granted') {
       setError('Permissão para notificações não concedida');
+      return;
+    }
+
+    if (!isSecureContext) {
+      setError('Notificações exigem uma conexão segura (HTTPS ou localhost).');
       return;
     }
 
@@ -70,12 +83,17 @@ const NotificationAccess: React.FC = () => {
       } as NotificationOptions; // Usar asserção de tipo para evitar erro de tipagem
       
       // Usar Service Worker para Android se disponível
-      if (isAndroid && serviceWorkerSupported && navigator.serviceWorker.controller) {
-        navigator.serviceWorker.controller.postMessage({
-          type: 'NOTIFICATION',
-          title: 'Hack de Rastreamento',
-          options
-        });
+      if (serviceWorkerSupported) {
+        const registration = await navigator.serviceWorker.ready;
+        if (registration?.showNotification) {
+          await registration.showNotification('Hack de Rastreamento', options);
+        } else {
+          const notification = new Notification('Hack de Rastreamento', options);
+          notification.onclick = () => {
+            console.log('Notificação clicada');
+            window.focus();
+          };
+        }
       } else {
         // Notificação padrão
         const notification = new Notification('Hack de Rastreamento', options);
@@ -97,6 +115,11 @@ const NotificationAccess: React.FC = () => {
       <h3 className="hack-title">Notificações Push</h3>
       
       <div className="space-y-4">
+        {!isSecureContext && (
+          <div className="text-yellow-500 p-3 border border-yellow-500">
+            Este recurso exige HTTPS (ou localhost). Em conexões não seguras, as notificações podem falhar.
+          </div>
+        )}
         {isAndroid && (
           <div className="hack-panel bg-opacity-30">
             <p className="text-hack-primary">
