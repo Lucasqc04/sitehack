@@ -9,6 +9,7 @@ const ScreenRecordingAccess: React.FC = () => {
   const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
   const [videoURL, setVideoURL] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSecureContext, setIsSecureContext] = useState(true);
 
   const startScreenShare = async () => {
     setIsLoading(true);
@@ -16,6 +17,10 @@ const ScreenRecordingAccess: React.FC = () => {
     
     try {
       // Verificar se a API está disponível
+      if (!window.isSecureContext) {
+        throw new Error('Compartilhamento de tela exige conexão segura (HTTPS ou localhost)');
+      }
+
       if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
         throw new Error('Compartilhamento de tela não suportado neste navegador');
       }
@@ -141,6 +146,7 @@ const ScreenRecordingAccess: React.FC = () => {
   };
   
   useEffect(() => {
+    setIsSecureContext(window.isSecureContext);
     return () => {
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
@@ -166,6 +172,11 @@ const ScreenRecordingAccess: React.FC = () => {
       <h3 className="hack-title">Gravação de Tela</h3>
       
       <div className="space-y-4">
+        {!isSecureContext && (
+          <div className="text-yellow-500 p-3 border border-yellow-500">
+            Este recurso exige HTTPS (ou localhost). Em conexões não seguras, o compartilhamento de tela pode falhar.
+          </div>
+        )}
         {!stream ? (
           <button 
             onClick={startScreenShare}
