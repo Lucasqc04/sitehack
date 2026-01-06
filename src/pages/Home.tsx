@@ -3,7 +3,11 @@ import {
   TrackingDisplay, 
   AdvancedFingerprint, 
   NetworkLocation,
-  HardwareDisplay
+  HardwareDisplay,
+  SessionSignals,
+  StorageFootprint,
+  PermissionStatusOverview,
+  MediaDevicesSummary
 } from '../components';
 import {
   CameraAccess,
@@ -17,7 +21,9 @@ import {
   ScreenRecordingAccess,
   PerformanceAccess,
   NavigationAnalytics,
-  PermissionsManager
+  PermissionsManager,
+  UsbAccess,
+  SerialAccess
 } from '../components/permissions';
 import HackingAnimation from '../components/HackingAnimation';
 import { requestAllPermissions } from '../services/permissionsAccess';
@@ -118,6 +124,10 @@ const Home: React.FC = () => {
         <NetworkLocation />
         <TrackingDisplay />
         <HardwareDisplay />
+        <SessionSignals />
+        <StorageFootprint />
+        <PermissionStatusOverview />
+        <MediaDevicesSummary />
         <AdvancedFingerprint />
         
         <div className="hack-panel mt-12">
@@ -170,6 +180,8 @@ const Home: React.FC = () => {
             <ClipboardAccess />
             <NotificationAccess />
             <ScreenRecordingAccess />
+            <UsbAccess />
+            <SerialAccess />
             <BluetoothAccess />
             <SensorsAccess />
             <PerformanceAccess />
